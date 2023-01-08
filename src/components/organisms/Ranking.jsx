@@ -1,7 +1,7 @@
 import Items from '@components/organisms/Items'
 import RankingItems from '@components/organisms/RankingItems'
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import AlertDialog from './AlertDialog'
@@ -9,15 +9,9 @@ import * as colors from '@styles/colors'
 import RankingResultItems from '@components/organisms/RankingResultItems'
 import { contract } from '@components/atoms/common'
 import { useEffect } from 'react'
-import { ref, getDownloadURL, listAll } from 'firebase/storage'
+import { getDatabase, ref, onValue, update } from 'firebase/database'
+import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import { storage } from '@components/atoms/firebase'
-
-const Container = styled.div`
-  width: 100%;
-  /* height:590px;  */
-  height: ${(props) => (props.flag ? 1300 : 590)}px;
-  background-color: ${colors.dodgerblueColor};
-`
 
 const Title = styled.div`
   font-family: HBIOS-SYS;
@@ -39,6 +33,12 @@ const Button = styled.button`
   font-size: 15px;
 `
 
+const Box = styled.div`
+  display: flex;
+  margin-left: auto;
+  cursor: pointer;
+`
+
 function Ranking(props) {
   const {
     on,
@@ -48,12 +48,15 @@ function Ranking(props) {
     check,
     setCheck,
     account,
+    uid,
   } = props
 
-  const [result, setResult] = useState(false)
+  const [result, setResult] = useState(true)
   const [text, setText] = useState('결과')
   const [admin, setAdmin] = useState(false)
   const [list, setList] = useState([])
+  const [rankingList, setRankingList] = useState([])
+  const db = getDatabase()
 
   useEffect(() => {
     const getAdmin = async () => {
@@ -74,14 +77,49 @@ function Ranking(props) {
   }, [account])
 
   useEffect(() => {
-    const getCandidate = async () => {
-      setList(await contract.methods.getCandidate().call())
-    }
     getCandidate()
   }, [])
 
+  useEffect(() => {
+    if (result === true) {
+      const getRanking = () => {
+        const tempArr = [...list]
+
+        for (let i = 0; i < tempArr.length - 1; i++) {
+          for (let j = i + 1; j < tempArr.length; j++) {
+            if (tempArr[i].point < tempArr[j].point) {
+              const temp = tempArr[i]
+              tempArr[i] = tempArr[j]
+              tempArr[j] = temp
+            }
+          }
+        }
+
+        setRankingList(tempArr)
+      }
+      getRanking()
+    }
+  }, [list, result])
+
+  useEffect(() => {
+    const readPost = () => {
+      onValue(
+        ref(db, '/posts/' + uid),
+        (snapshot) => {
+          setResult(snapshot.val().flag)
+        },
+        {
+          onlyOnce: true,
+        },
+      )
+    }
+    if (account !== '') {
+      readPost()
+    }
+  }, [db, uid, account])
+
   const handleChange = () => {
-    if (list.length > 0) {
+    if (list.length > 0 && account !== '') {
       setOn(!on)
     }
   }
@@ -89,7 +127,6 @@ function Ranking(props) {
   const handleButtonClick = (e) => {
     e.stopPropagation()
     setOpen(true)
-    // setResult(false)
   }
 
   const handleButtonRegisterClick = (e) => {
@@ -99,18 +136,66 @@ function Ranking(props) {
 
   const handleButtonResultClick = (e) => {
     e.stopPropagation()
+    getCandidate()
     if (result === true) {
+      updatePost(false)
       setResult(false)
       setText('결과')
     } else {
+      updatePost(true)
       setResult(true)
       setText('투표')
     }
   }
 
-  // const handleClose = () => {
-  //   setOpen(false)
-  // }
+  const updatePost = (result) => {
+    const updates = {}
+
+    // A post entry.
+    const postData = {
+      flag: result,
+    }
+
+    updates['/posts/' + uid] = postData
+
+    return update(ref(db), updates)
+  }
+
+  const getCandidate = async () => {
+    setList(await contract.methods.getCandidate().call())
+  }
+
+  const handleRefreshButtonClick = (e) => {
+    e.stopPropagation()
+    getCandidate()
+  }
+
+  const handleClickInit = async (e) => {
+    e.stopPropagation()
+    deleteStorageImg()
+    // try {
+    //   await contract.methods.init().send({ from: account })
+    // } catch (error) {}
+  }
+
+  const deleteStorageImg = async (e) => {
+    // try {
+    //   await list.forEach((item) => {
+    //     const rootRef = ref(storage, item.imgUrl)
+    //     deleteObject(rootRef)
+    //   })
+    // } catch (error) {}
+    e.stopPropagation()
+    try {
+      const storageRef = ref(storage, 'userImages/aa') //ref storage로 바꿔야 함 ..
+      // console.log(storageRef)
+      // await deleteObject(storageRef)
+      // alert('성공적으로 업로드 되었습니다')
+    } catch (err) {
+      console.log(err)
+      alert('이미지 업로드에 실패하였습니다')
+    }
+  }
 
   return (
     <Accordion
@@ -131,12 +216,27 @@ function Ranking(props) {
           <>
             <Button onClick={handleButtonResultClick}>{text}</Button>
             <Button onClick={handleButtonRegisterClick}>후보자 등록</Button>
+            {/* <Button onClick={() => {}}>후보자 삭제</Button> */}
+            {/* <Button onClick={deleteStorageImg}>초기화</Button> */}
           </>
         ) : null}
+        {account === '' ? null : (
+          <Box>
+            <RestartAltIcon
+              style={{
+                width: '30px',
+                height: '40px',
+                marginTop: '7px',
+                marginRight: '7px',
+              }}
+              onClick={handleRefreshButtonClick}
+            />
+          </Box>
+        )}
       </AccordionSummary>
       <AccordionDetails>
         {result === true ? (
-          <RankingResultItems />
+          <RankingResultItems list={rankingList} />
         ) : (
           <RankingItems check={check} setCheck={setCheck} list={list} />
         )}

@@ -9,7 +9,7 @@ import { contract } from '@components/atoms/common'
 import { useEffect } from 'react'
 const Container = styled.div`
   width: 100%;
-  height: 700px;
+  height: 100%;
   background-color: orange;
 `
 const Items = styled.div`

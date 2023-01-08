@@ -8,29 +8,28 @@ import * as colors from '@styles/colors'
 import RankingResultitem from '@components/molecules/RankingResultitem'
 const Container = styled.div`
   width: 100%;
-  height: 700px;
+  height: 100%;
   background-color: orange;
 `
 const Items = styled.div`
   display: grid;
+
   grid-template-columns: repeat(2, 1fr);
 `
 
-const RadioItems = styled.div`
-  /* display: flex;
-  flex-wrap: wrap;
-  flex-direction: column; */
-  /* float: left; */
-  display: flex;
+const Collection = styled.div`
   border-bottom: 1px solid ${colors.borderSecondary};
 `
 
 function RankingResultItems(props) {
+  const { list } = props
   return (
     <Container>
       <Items>
-        {imageData.imageList.map((data, index) => (
-          <RankingResultitem item={data} index={index} />
+        {list.map((data, index) => (
+          <Collection key={data.index}>
+            <RankingResultitem item={data} index={index} />
+          </Collection>
         ))}
       </Items>
     </Container>

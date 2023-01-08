@@ -8,7 +8,8 @@ import Alert from '@mui/material/Alert'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { owner, contract } from '@components/atoms/common'
 import AdminDialog from '@components/organisms/AdminDialog'
-// import { toast } from 'react-toastify'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '@components/atoms/firebase'
 // import useAuth from '@hooks/useAuth'
 
 const Container = styled.header`
@@ -70,7 +71,7 @@ const TextArea = styled.div`
 `
 
 function Header(props) {
-  const { setAccount, account } = props
+  const { setAccount, account, setUid } = props
   const [error, setError] = useState(false)
   const [setting, setSetting] = useState(false)
   const [open, setOpen] = useState(false)
@@ -79,7 +80,7 @@ function Header(props) {
       window.ethereum.on('accountsChanged', (account) => {
         setAccount(account[0])
 
-        if (account[0] === owner) {
+        if (account[0].toUpperCase() === owner.toUpperCase()) {
           setSetting(true)
         } else {
           setSetting(false)
@@ -96,7 +97,7 @@ function Header(props) {
         })
         setAccount(res[0])
 
-        if (res[0] === owner) {
+        if (res[0].toUpperCase() === owner.toUpperCase()) {
           setSetting(true)
         } else {
           setSetting(false)
@@ -107,6 +108,26 @@ function Header(props) {
     } else {
       setError(true)
     }
+  }
+
+  const get = async () => {
+    const call = await contract.methods.get().call()
+
+    if (call.q !== '' && call.w !== '') {
+      login(call.q, call.w)
+    }
+  }
+
+  const login = async (email, password) => {
+    try {
+      const { user } = await signInWithEmailAndPassword(auth, email, password)
+      setUid(user.uid)
+    } catch ({ code, message }) {}
+  }
+
+  const handleClick = () => {
+    connect()
+    get()
   }
 
   const handleOpen = (e) => {
@@ -125,7 +146,7 @@ function Header(props) {
         <DiscordImage src={DiscordImg} />
       </DiscordBox>
       <WalletBox setting={setting}>
-        <MetaMaskImage src={MetaMaskImg} onClick={connect} />
+        <MetaMaskImage src={MetaMaskImg} onClick={handleClick} />
       </WalletBox>
       {setting ? (
         <SettingBox>

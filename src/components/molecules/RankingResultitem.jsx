@@ -1,64 +1,91 @@
-// NFT에 랭킹 시스템을 도입
-// 웹 사이트에서 지갑을 연결하고
-// 연결된 지갑의 갯수를 사이트에서 파악하고 투표할 수 있는 권환을 준다
-// 권환 확인만 하기에 트렌젝션 가스거래는 발생하지 않고
-// 실시간으로 투표를 할 수있다
-// 랭킹 기능은 매달 초기화 되며 매달 새롭게 다시 투표 할 수있다
-
 import styled from 'styled-components'
 import * as colors from '@styles/colors'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useState } from 'react'
-
-const CollectionItem = styled.div`
-  padding: 12px 16px;
-  border-bottom: 1px solid ${colors.borderSecondary};
-`
+import Chip from '@mui/material/Chip'
+import Stack from '@mui/material/Stack'
+import { useEffect } from 'react'
+import { ref, getDownloadURL, listAll } from 'firebase/storage'
+import { storage } from '@components/atoms/firebase'
 
 const CollectionInfo = styled.div`
   display: flex;
   align-items: center;
-  height: 100px;
-`
-
-const RankText = styled.div`
-  font-family: HBIOS-SYS;
-  font-size: 14px;
+  height: 110px;
 `
 
 const Thumbnail = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   border-radius: 50px;
   margin-left: 24px;
-
+  border-style: solid;
+  border-width: medium;
   background-color: ${colors.bgSecondary};
-  object-fit: contain;
-`
-
-const CollectionName = styled.span`
-  font-weight: 500;
-  margin-left: 12px;
-  font-family: HBIOS-SYS;
+  /* object-fit: contain; */
 `
 
 const Title = styled.div`
   font-family: HBIOS-SYS;
-  font-size: 30px;
-  margin-top: 20px;
+  font-size: 20px;
   margin-left: 20px;
 `
 
 function RankingResultitem({ item, index }) {
+  const [imgUrl, setImgUrl] = useState('')
+  useEffect(() => {
+    const getUrl = async () => {
+      getDownloadURL(ref(storage, item.imgUrl))
+        .then((url) => {
+          setImgUrl(url)
+        })
+        .catch((error) => {
+          // Handle any errors
+        })
+    }
+
+    if (item.imgUrl !== '') {
+      getUrl()
+    }
+  }, [item])
   return (
-    <CollectionItem>
-      <CollectionInfo>
-        <RankText>{index + 1}</RankText>
-        <Thumbnail src={item.url} />
-        <CollectionName>{'aaa'}</CollectionName>
-      </CollectionInfo>
-    </CollectionItem>
+    <CollectionInfo>
+      <Title>{index + 1}</Title>
+      {imgUrl !== '' ? <Thumbnail src={imgUrl} /> : null}
+      <Stack direction="row" spacing={1} style={{ marginLeft: '10px' }}>
+        {item.nickName !== '' ? (
+          <Chip
+            label={item.nickName}
+            style={{
+              fontFamily: 'HBIOS-SYS',
+              fontWeight: 500,
+              fontSize: '30px',
+            }}
+          />
+        ) : null}
+        {item.url !== '' ? (
+          <Chip
+            label={item.url}
+            style={{
+              fontFamily: 'HBIOS-SYS',
+              fontWeight: 500,
+              fontSize: '30px',
+            }}
+          />
+        ) : null}
+        {item.comment !== '' ? (
+          <Chip
+            label={item.comment}
+            style={{
+              fontFamily: 'HBIOS-SYS',
+              fontWeight: 500,
+              fontSize: '30px',
+            }}
+          />
+        ) : null}
+      </Stack>
+    </CollectionInfo>
   )
 }
 

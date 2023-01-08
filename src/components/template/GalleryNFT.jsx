@@ -11,7 +11,8 @@ import RegisterDialog from '@components/organisms/RegisterDialog'
 const Container = styled.div`
   width: 100%;
   /* height:590px;  */
-  height: ${(props) => (props.flag ? 1300 : 590)}px;
+  height:100%;
+  /* height: ${(props) => (props.flag ? 1300 : 590)}px; */
   background-color: ${colors.dodgerblueColor};
 `
 
@@ -36,7 +37,7 @@ const Button = styled.button`
 `
 
 function GalleryNFT(props) {
-  const { account } = props
+  const { account, setLoading, uid } = props
   const [on, setOn] = useState(false)
   const [open, setOpen] = useState(false)
   const [registerOpen, setRegisterOpen] = useState(false)
@@ -54,12 +55,20 @@ function GalleryNFT(props) {
         check={check}
         setCheck={setCheck}
         account={account}
+        uid={uid}
       />
-      <AlertDialog open={open} setOpen={setOpen} check={check} />
+      <AlertDialog
+        open={open}
+        setOpen={setOpen}
+        check={check}
+        account={account}
+        setLoading={setLoading}
+      />
       <RegisterDialog
         open={registerOpen}
         setOpen={setRegisterOpen}
         account={account}
+        setLoading={setLoading}
       />
     </Container>
   )

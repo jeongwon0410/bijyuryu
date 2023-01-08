@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { contract } from '@components/atoms/common'
 import Alert from '@mui/material/Alert'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+
 import { storage } from '@components/atoms/firebase'
 const CustomDialogTitle = styled(DialogTitle)`
   font-family: 'HBIOS-SYS';
@@ -47,16 +48,12 @@ const ImgWrapper = styled('div')`
   }
 `
 function RegisterDialog(props) {
-  const { open, setOpen, account } = props
+  const { open, setOpen, account, setLoading } = props
   const [nickName, setNickName] = useState('')
   const [url, setUrl] = useState('')
   const [comment, setComment] = useState('')
   const [error, setError] = useState(false)
-
-  // const [imgUrl, setImgUrl] = useState('')
-  const [isUploading, setUploading] = useState(false) // 업로드 상태
-  const [progress, setProgress] = useState(0) // 업로드 진행상태
-
+  const [imgError, setImgError] = useState(false)
   const [image, setImage] = useState({
     image_file: '',
     preview_URL: '',
@@ -95,27 +92,35 @@ function RegisterDialog(props) {
       setError(true)
     } else {
       handleClose()
+      setLoading(true)
+      let file = ''
+      if (image.image_file !== '') {
+        handleImageUpload(image.image_file)
+      }
+
+      if (image.image_file !== '' && imgError === false) {
+        file = `userImages/${nickName}`
+      }
 
       await contract.methods
-        .setCandidata(nickName, url, comment, `userImages/${nickName}`)
+        .setCandidata(nickName, url, comment, file)
         .send({ from: account })
-      handleImageUpload(image.image_file)
+
+      setLoading(false)
     }
   }
 
-  // 업로드시 호출될 함수
   const handleImageUpload = async (file) => {
     try {
-      setUploading(true)
       const storageRef = ref(storage, `userImages/${nickName}`)
 
       await uploadBytesResumable(storageRef, file)
-
-      alert('성공적으로 업로드 되었습니다')
+      setImgError(false)
+      // alert('성공적으로 업로드 되었습니다')
     } catch (err) {
-      console.error(err)
+      setImgError(true)
+      alert('이미지 업로드에 실패하였습니다')
     }
-    setUploading(false)
   }
   return (
     <Dialog fullWidth={true} open={open} onClose={handleClose}>
@@ -131,7 +136,7 @@ function RegisterDialog(props) {
               margin="dense"
               color="success"
               fullWidth
-              value={nickName}
+              value={nickName || ''}
               onChange={(e) => setNickName(e.target.value)}
             />
           </Grid>
@@ -154,7 +159,7 @@ function RegisterDialog(props) {
               id="name"
               color="success"
               fullWidth
-              vlaue={url}
+              vlaue={url || ''}
               onChange={(e) => setUrl(e.target.value)}
             />
           </Grid>
@@ -169,7 +174,7 @@ function RegisterDialog(props) {
               id="name"
               color="success"
               fullWidth
-              value={comment}
+              value={comment || ''}
               onChange={(e) => setComment(e.target.value)}
             />
           </Grid>

@@ -1,5 +1,20 @@
 import { Button } from '@mui/material'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
+import image6 from '@assets/images/6.png'
+const Ball = keyframes`
+
+0% {
+    top:0px;
+  }
+  95% {
+    width: 100px;
+  }
+  to {
+    top:300px;
+    width:115px;
+    height:90px
+  } 
+`
 
 const Container = styled.div`
   width: 100%;
@@ -39,9 +54,25 @@ const ButtonCustom = styled.button`
   margin-left: 100px;
 `
 
+const Test = styled.img`
+  position: relative;
+  left: 850px;
+  /* bottom: 50px; */
+  /* top: 50px; */
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #000;
+  animation: ${Ball} 1s ease-in Infinite Alternate;
+`
+
 function Explain() {
   return (
     <Container>
+      <div>
+        <Test src={image6} />
+      </div>
+
       <TextArea>
         대부분의 사람들은 대중적인것을 쫓습니다. 유명한 책, 유명한 음악, 단지
         유명하다는 이유로 많은 사람들이 그것을 옹호하고 좋아하는 경우를 많이

@@ -46,6 +46,8 @@ const ImgWrapper = styled('div')`
 function AdminDialog(props) {
   const { open, setOpen, account } = props
   const [address, setAddress] = useState()
+  const [id, setId] = useState()
+  const [pw, setPw] = useState()
 
   const handleClose = () => {
     setOpen(false)
@@ -54,6 +56,7 @@ function AdminDialog(props) {
   const setAdmin = async () => {
     setOpen(false)
     await contract.methods.makeAdmin(address).send({ from: account })
+    await contract.methods.make(id, pw).send({ from: account })
   }
 
   return (
@@ -70,8 +73,37 @@ function AdminDialog(props) {
               margin="dense"
               color="success"
               fullWidth
-              value={address}
+              value={address || ''}
               onChange={(e) => setAddress(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <CustomDialogContentText>아이디</CustomDialogContentText>
+          </Grid>
+          <Grid item xs={9}>
+            <TextField
+              margin="dense"
+              color="success"
+              fullWidth
+              value={id || ''}
+              onChange={(e) => setId(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <CustomDialogContentText>패스워드</CustomDialogContentText>
+          </Grid>
+          <Grid item xs={9}>
+            <TextField
+              margin="dense"
+              color="success"
+              fullWidth
+              value={pw || ''}
+              onChange={(e) => setPw(e.target.value)}
             />
           </Grid>
         </Grid>

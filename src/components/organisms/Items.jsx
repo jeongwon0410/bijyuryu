@@ -5,8 +5,20 @@ import { useEffect } from 'react'
 import { ref, getDownloadURL, listAll } from 'firebase/storage'
 import { storage } from '@components/atoms/firebase'
 import CircularProgress from '@mui/material/CircularProgress'
+import image1 from '@assets/images/1.png'
+import image2 from '@assets/images/2.png'
+import image3 from '@assets/images/3.png'
+import image4 from '@assets/images/4.png'
+import image5 from '@assets/images/5.png'
+import image6 from '@assets/images/6.png'
+import image7 from '@assets/images/7.png'
+import image8 from '@assets/images/8.png'
+import image9 from '@assets/images/9.png'
+import image10 from '@assets/images/10.png'
+
 const ImageAni1 = keyframes`
-  from {
+
+from {
     left: 0px;
   }
   to {
@@ -71,42 +83,55 @@ const Title = styled.div`
 function Items() {
   const [imgUrl, setImgUrl] = useState([])
   const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    setLoading(true)
-    const listRef = ref(storage, 'nftImages')
-    const arr = []
-    listAll(listRef)
-      .then((res) => {
-        res.items.forEach((itemRef) => {
-          getDownloadURL(ref(storage, itemRef._location.path_))
-            .then((url) => {
-              arr.push(url)
-            })
-            .then(() => {
-              setImgUrl(arr)
-            })
-            .catch((error) => {
-              // Handle any errors
-            })
-        })
-      })
 
-      .catch((error) => {
-        // Uh-oh, an error occurred!
-      })
+  const img = [
+    image1,
+    image2,
+    image3,
+    image4,
+    image5,
+    image6,
+    image7,
+    image8,
+    image9,
+    image10,
+  ]
+  // useEffect(() => {
+  //   setLoading(true)
+  //   const listRef = ref(storage, 'nftImages')
+  //   const arr = []
+  //   listAll(listRef)
+  //     .then((res) => {
+  //       res.items.forEach((itemRef) => {
+  //         getDownloadURL(ref(storage, itemRef._location.path_))
+  //           .then((url) => {
+  //             arr.push(url)
+  //           })
+  //           .then(() => {
+  //             setImgUrl(arr)
+  //           })
+  //           .catch((error) => {
+  //             // Handle any errors
+  //           })
+  //       })
+  //     })
 
-    const id = setTimeout(() => {
-      setLoading(false)
-    }, 1000)
-    return () => {
-      clearTimeout(id)
-    }
-  }, [])
+  //     .catch((error) => {
+  //       // Uh-oh, an error occurred!
+  //     })
+
+  //   const id = setTimeout(() => {
+  //     setLoading(false)
+  //   }, 2000)
+  //   return () => {
+  //     clearTimeout(id)
+  //   }
+  // }, [])
 
   return (
     <Container>
       <Title>판매중인 아이템</Title>
-      {loading ? (
+      {/* {loading ? (
         <center>
           <CircularProgress
             color="error"
@@ -115,19 +140,19 @@ function Items() {
           <Title>waiting...</Title>
         </center>
       ) : (
-        <>
-          <Element1>
-            {imgUrl.map((data, index) => (
-              <CardImage key={index} src={data}></CardImage>
-            ))}
-          </Element1>
-          <Element2>
-            {imgUrl.map((data, index) => (
-              <CardImage key={index} src={data}></CardImage>
-            ))}
-          </Element2>
-        </>
-      )}
+        <> */}
+      <Element1>
+        {img.map((data, index) => (
+          <CardImage key={index} src={data}></CardImage>
+        ))}
+      </Element1>
+      <Element2>
+        {img.map((data, index) => (
+          <CardImage key={index} src={data}></CardImage>
+        ))}
+      </Element2>
+      {/* </>
+      )} */}
     </Container>
   )
 }
