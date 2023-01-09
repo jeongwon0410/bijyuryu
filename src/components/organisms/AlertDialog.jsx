@@ -39,7 +39,7 @@ function AlertDialog(props) {
   useEffect(() => {
     const checkNFT = async () => {
       const amount = await erc20_contract.methods.balanceOf(account).call()
-
+      console.log(amount)
       if (amount > 0) {
         setNft(amount)
         setError(false)
