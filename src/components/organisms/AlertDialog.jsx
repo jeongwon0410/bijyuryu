@@ -33,13 +33,20 @@ const CustomButton = styled(Button)`
 `
 
 function AlertDialog(props) {
-  const { open, setOpen, check, account, setLoading } = props
+  const {
+    open,
+    setOpen,
+    check,
+    account,
+    setLoading,
+    checkMainNFT,
+    getCandidate,
+  } = props
   const [nft, setNft] = useState(0)
   const [error, setError] = useState(false)
   useEffect(() => {
     const checkNFT = async () => {
       const amount = await erc20_contract.methods.balanceOf(account).call()
-      console.log(amount)
       if (amount > 0) {
         setNft(amount)
         setError(false)
@@ -63,6 +70,8 @@ function AlertDialog(props) {
       await contract.methods
         .vote(check - 1, account, nft)
         .send({ from: account })
+      checkMainNFT(account)
+      getCandidate()
       setLoading(false)
     } catch (error) {
       setLoading(false)

@@ -5,6 +5,7 @@ import * as colors from '@styles/colors'
 import Ranking from '@components/organisms/Ranking'
 import AlertDialog from '@components/organisms/AlertDialog'
 import RegisterDialog from '@components/organisms/RegisterDialog'
+import { contract } from '@components/atoms/common'
 
 // import Alert from '@material-ui/lab/Alert'
 
@@ -37,12 +38,15 @@ const Button = styled.button`
 `
 
 function GalleryNFT(props) {
-  const { account, setLoading, uid } = props
+  const { account, setLoading, uid, checkNFT } = props
   const [on, setOn] = useState(false)
   const [open, setOpen] = useState(false)
   const [registerOpen, setRegisterOpen] = useState(false)
   const [check, setCheck] = useState(0)
-
+  const [list, setList] = useState([])
+  const getCandidate = async () => {
+    setList(await contract.methods.getCandidate().call())
+  }
   return (
     <Container flag={on}>
       <Items />
@@ -56,6 +60,8 @@ function GalleryNFT(props) {
         setCheck={setCheck}
         account={account}
         uid={uid}
+        getCandidate={getCandidate}
+        list={list}
       />
       <AlertDialog
         open={open}
@@ -63,6 +69,8 @@ function GalleryNFT(props) {
         check={check}
         account={account}
         setLoading={setLoading}
+        checkMainNFT={checkNFT}
+        getCandidate={getCandidate}
       />
       <RegisterDialog
         open={registerOpen}

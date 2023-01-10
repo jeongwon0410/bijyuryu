@@ -5,7 +5,8 @@ import image3 from '@assets/images/image3.png'
 const Container = styled.div`
   width: 100%;
   height: 700px;
-  /* background-color: teal; */
+  /* margin-top: 10px; */
+  background-color: black;
   flex-direction: column;
   display: flex;
   align-items: center;
@@ -15,7 +16,7 @@ const Container = styled.div`
 const ImageArea = styled.div`
   /* margin-top: 50px; */
   width: 80%;
-
+  /* height: 70%; */
   /* height: 200px; */
   display: grid;
   /* background-color: red; */
@@ -26,13 +27,14 @@ const ImageArea = styled.div`
 
 const ImageCustom = styled.img`
   width: 100%;
-  height: 70%;
+  height: 400px;
 `
 
 const TextArea = styled.div`
   font-family: HBIOS-SYS;
   font-size: 100px;
-  margin-top: 100px;
+  /* margin-top: 100px; */
+  color: white;
 `
 
 function ManagementTeam() {

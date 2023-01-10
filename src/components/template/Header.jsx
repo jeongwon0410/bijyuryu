@@ -6,22 +6,38 @@ import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import Alert from '@mui/material/Alert'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { owner, contract } from '@components/atoms/common'
+import {
+  owner,
+  contract,
+  aaa,
+  bbb,
+  erc20_contract,
+} from '@components/atoms/common'
 import AdminDialog from '@components/organisms/AdminDialog'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@components/atoms/firebase'
 // import useAuth from '@hooks/useAuth'
-
+import logo from '@assets/images/logo.png'
+import { useCallback } from 'react'
 const Container = styled.header`
   width: 100%;
-  height: 64px;
+  height: 85px;
   position: fixed;
   top: 0px;
   display: flex;
   padding: 0px 16px;
   align-items: center;
   z-index: 999;
-  background-color: red;
+  background-color: white;
+`
+
+const TextBox = styled.div`
+  margin-top: 10px;
+  height: 80px;
+  width: 100%;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
 `
 
 const GrayRoundBox = styled.div`
@@ -38,6 +54,7 @@ const WalletBox = styled(GrayRoundBox)`
   /* margin-left: auto; */
   background-color: ${colors.darkslategray};
   margin-right: ${(props) => (props.setting ? 8 : 30)}px;
+  /* margin-right: 8px; */
   cursor: pointer;
 `
 
@@ -68,66 +85,93 @@ const TextArea = styled.div`
   color: ${colors.bgBlack};
   font-family: HBIOS-SYS;
   font-size: 20px;
+  margin-bottom: 5px;
+`
+
+const LogoImage = styled.img`
+  width: 30px;
+  height: 50px;
+  margin-right:10px;
+  /* margin-right: ${(props) => (props.setting ? 8 : 30)}px; */
+  /* margin-left: auto; */
+  /* margin-right: 20px; */
 `
 
 function Header(props) {
-  const { setAccount, account, setUid } = props
-  const [error, setError] = useState(false)
-  const [setting, setSetting] = useState(false)
+  const {
+    connect,
+    account,
+    nft,
+    voteNft,
+    setting,
+    login,
+    error,
+    setError,
+  } = props
+
   const [open, setOpen] = useState(false)
-  useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (account) => {
-        setAccount(account[0])
 
-        if (account[0].toUpperCase() === owner.toUpperCase()) {
-          setSetting(true)
-        } else {
-          setSetting(false)
-        }
-      })
-    }
-  }, [setAccount])
+  // const checkNFT = useCallback(async (acc) => {
+  //   const voter = await contract.methods.getVoter(acc).call()
+  //   const amount = await erc20_contract.methods.balanceOf(acc).call()
+  //   setNft(amount)
+  //   const voterNftInt = parseInt(voter.originNft)
+  //   const nftInt = parseInt(amount)
+  //   if (voterNftInt === nftInt) {
+  //     setVoteNft(voter.nft)
+  //   } else if (voterNftInt < nftInt) {
+  //     setVoteNft(parseInt(voter.nft) + (nftInt - voterNftInt))
+  //   } else if (voterNftInt > nftInt) {
+  //     setVoteNft(parseInt(voter.nft) - (voterNftInt - nftInt))
+  //   }
+  // }, [])
 
-  const connect = async () => {
-    if (window.ethereum) {
-      try {
-        const res = await window.ethereum.request({
-          method: 'eth_requestAccounts',
-        })
-        setAccount(res[0])
+  // useEffect(() => {
+  //   if (window.ethereum) {
+  //     window.ethereum.on('accountsChanged', (account) => {
+  //       setAccount(account[0])
+  //       checkNFT(account[0])
+  //       if (account[0].toUpperCase() === owner.toUpperCase()) {
+  //         setSetting(true)
+  //       } else {
+  //         setSetting(false)
+  //       }
+  //     })
+  //   }
+  // }, [setAccount, checkNFT])
 
-        if (res[0].toUpperCase() === owner.toUpperCase()) {
-          setSetting(true)
-        } else {
-          setSetting(false)
-        }
-      } catch (err) {
-        setAccount('')
-      }
-    } else {
-      setError(true)
-    }
-  }
+  // const connect = async () => {
+  //   if (window.ethereum) {
+  //     try {
+  //       const res = await window.ethereum.request({
+  //         method: 'eth_requestAccounts',
+  //       })
+  //       setAccount(res[0])
+  //       checkNFT(res[0])
+  //       if (res[0].toUpperCase() === owner.toUpperCase()) {
+  //         setSetting(true)
+  //       } else {
+  //         setSetting(false)
+  //       }
+  //     } catch (err) {
+  //       setAccount('')
+  //     }
+  //   } else {
+  //     setError(true)
+  //   }
+  // }
 
-  const get = async () => {
-    const call = await contract.methods.get().call()
-
-    if (call.q !== '' && call.w !== '') {
-      login(call.q, call.w)
-    }
-  }
-
-  const login = async (email, password) => {
-    try {
-      const { user } = await signInWithEmailAndPassword(auth, email, password)
-      setUid(user.uid)
-    } catch ({ code, message }) {}
-  }
+  // const login = async () => {
+  //   try {
+  //     const { user } = await signInWithEmailAndPassword(auth, aaa, bbb)
+  //     setUid(user.uid)
+  //   } catch ({ code, message }) {}
+  // }
 
   const handleClick = () => {
     connect()
-    get()
+
+    login()
   }
 
   const handleOpen = (e) => {
@@ -136,10 +180,15 @@ function Header(props) {
 
   return (
     <Container>
+      <LogoImage src={logo} />
       {account === '' ? (
         <TextArea>지갑 연결!!!</TextArea>
       ) : (
-        <TextArea>지갑 주소 : {account}</TextArea>
+        <TextBox>
+          <TextArea>지갑 주소 : {account}</TextArea>
+          <TextArea>내 nft : {nft} </TextArea>
+          <TextArea>투표 가능 : {voteNft}</TextArea>
+        </TextBox>
       )}
 
       <DiscordBox>
@@ -148,6 +197,7 @@ function Header(props) {
       <WalletBox setting={setting}>
         <MetaMaskImage src={MetaMaskImg} onClick={handleClick} />
       </WalletBox>
+
       {setting ? (
         <SettingBox>
           <SettingsIcon onClick={handleOpen} />

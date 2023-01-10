@@ -79,7 +79,7 @@ function AdminDialog(props) {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2}>
+        {/* <Grid container spacing={2}>
           <Grid item xs={3}>
             <CustomDialogContentText>아이디</CustomDialogContentText>
           </Grid>
@@ -106,7 +106,7 @@ function AdminDialog(props) {
               onChange={(e) => setPw(e.target.value)}
             />
           </Grid>
-        </Grid>
+        </Grid> */}
       </DialogContent>
       <DialogActions>
         <CustomButton onClick={handleClose}>Cancel</CustomButton>

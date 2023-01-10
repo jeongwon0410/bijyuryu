@@ -49,12 +49,14 @@ function Ranking(props) {
     setCheck,
     account,
     uid,
+    getCandidate,
+    list,
   } = props
 
   const [result, setResult] = useState(true)
   const [text, setText] = useState('결과')
   const [admin, setAdmin] = useState(false)
-  const [list, setList] = useState([])
+  // const [list, setList] = useState([])
   const [rankingList, setRankingList] = useState([])
   const db = getDatabase()
 
@@ -161,9 +163,9 @@ function Ranking(props) {
     return update(ref(db), updates)
   }
 
-  const getCandidate = async () => {
-    setList(await contract.methods.getCandidate().call())
-  }
+  // const getCandidate = async () => {
+  //   setList(await contract.methods.getCandidate().call())
+  // }
 
   const handleRefreshButtonClick = (e) => {
     e.stopPropagation()

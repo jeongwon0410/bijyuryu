@@ -103,7 +103,7 @@ function RegisterDialog(props) {
       }
 
       await contract.methods
-        .setCandidata(nickName, url, comment, file)
+        .setCandidata(nickName, comment, url, file)
         .send({ from: account })
 
       setLoading(false)

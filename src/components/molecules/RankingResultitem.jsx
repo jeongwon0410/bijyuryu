@@ -4,10 +4,10 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useState } from 'react'
 import Chip from '@mui/material/Chip'
-import Stack from '@mui/material/Stack'
 import { useEffect } from 'react'
 import { ref, getDownloadURL, listAll } from 'firebase/storage'
 import { storage } from '@components/atoms/firebase'
+import { Tooltip } from '@mui/material'
 
 const CollectionInfo = styled.div`
   display: flex;
@@ -19,11 +19,60 @@ const Thumbnail = styled.img`
   width: 70px;
   height: 70px;
   border-radius: 50px;
-  margin-left: 24px;
+  /* margin-left: 24px; */
   border-style: solid;
   border-width: medium;
   background-color: ${colors.bgSecondary};
   /* object-fit: contain; */
+`
+
+const Stack = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  row-gap: 20px;
+  /* grid-template-rows: repeat(2, 1fr); */
+  /* height: 110px; */
+`
+
+const Stack1 = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  /* width: 100px; */
+`
+const Stack3 = styled.div`
+  display: flex;
+  align-items: center;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  width: 400px;
+`
+const Stack2 = styled.div`
+  display: flex;
+  align-items: center;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  column-gap: 20px;
+  /* justify-content: center; */
+  /* column-gap: 20px;*/
+
+  width: 190px;
+`
+
+const PointTitle = styled.div`
+  font-family: HBIOS-SYS;
+  font-size: 30px;
+  color: ${colors.redColor};
+  /* margin-left: 20px; */
+  margin-left: 50px;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
 `
 
 const Title = styled.div`
@@ -52,39 +101,50 @@ function RankingResultitem({ item, index }) {
   return (
     <CollectionInfo>
       <Title>{index + 1}</Title>
-      {imgUrl !== '' ? <Thumbnail src={imgUrl} /> : null}
-      <Stack direction="row" spacing={1} style={{ marginLeft: '10px' }}>
-        {item.nickName !== '' ? (
-          <Chip
-            label={item.nickName}
-            style={{
-              fontFamily: 'HBIOS-SYS',
-              fontWeight: 500,
-              fontSize: '30px',
-            }}
-          />
-        ) : null}
-        {item.url !== '' ? (
-          <Chip
-            label={item.url}
-            style={{
-              fontFamily: 'HBIOS-SYS',
-              fontWeight: 500,
-              fontSize: '30px',
-            }}
-          />
-        ) : null}
-        {item.comment !== '' ? (
-          <Chip
-            label={item.comment}
-            style={{
-              fontFamily: 'HBIOS-SYS',
-              fontWeight: 500,
-              fontSize: '30px',
-            }}
-          />
-        ) : null}
+      <Stack>
+        <Stack1>{imgUrl !== '' ? <Thumbnail src={imgUrl} /> : null}</Stack1>
+        <Stack2>
+          {item.nickName !== '' ? (
+            <Tooltip title={item.nickName}>
+              <Chip
+                label={item.nickName}
+                sx={{
+                  fontFamily: 'HBIOS-SYS',
+                  fontWeight: 500,
+                  fontSize: '30px',
+                }}
+              />
+            </Tooltip>
+          ) : null}
+          {item.comment !== '' ? (
+            <Tooltip title={item.comment}>
+              <Chip
+                label={item.comment}
+                sx={{
+                  fontFamily: 'HBIOS-SYS',
+                  fontWeight: 500,
+                  fontSize: '30px',
+                }}
+              />
+            </Tooltip>
+          ) : null}
+        </Stack2>
+        <Stack3>
+          {item.url !== '' ? (
+            <Tooltip title={item.url}>
+              <Chip
+                label={item.url}
+                sx={{
+                  fontFamily: 'HBIOS-SYS',
+                  fontWeight: 500,
+                  fontSize: '30px',
+                }}
+              />
+            </Tooltip>
+          ) : null}
+        </Stack3>
       </Stack>
+      <PointTitle>{item.point}</PointTitle>
     </CollectionInfo>
   )
 }
