@@ -43,6 +43,18 @@ const ImgText = styled.div`
   color: white;
 `
 
+const SubText = styled.div`
+  font-family: HBIOS-SYS;
+  font-size: 25px;
+  /* margin-top: 100px; */
+  color: white;
+  float: right;
+`
+
+const TextBox = styled.div`
+  display: flex;
+`
+
 function ManagementTeam() {
   return (
     <Container>
@@ -50,23 +62,27 @@ function ManagementTeam() {
       <ImageArea>
         <div>
           <ImageCustom src={image1} />
-          <ImgText>
-            0 <br />
-            어드바이저
-          </ImgText>
-        </div>
-        <div>
-          <ImageCustom src={image2} />
-          <ImgText>
-            LEE
-            <br /> 디자인
-          </ImgText>
+          <ImgText>0 </ImgText>
+          <TextBox>
+            <ImgText>어드바이저</ImgText>
+            <SubText>COO,CFO</SubText>
+          </TextBox>
         </div>
         <div>
           <ImageCustom src={image3} />
-          <ImgText>
-            ONE <br /> 개발자
-          </ImgText>
+          <ImgText>ONE</ImgText>
+          <TextBox>
+            <ImgText>개발자</ImgText>
+            <SubText>CPO,CTO</SubText>
+          </TextBox>
+        </div>
+        <div>
+          <ImageCustom src={image2} />
+          <ImgText>LEE</ImgText>
+          <TextBox>
+            <ImgText>디자인</ImgText>
+            <SubText>CEO,CCO</SubText>
+          </TextBox>
         </div>
       </ImageArea>
     </Container>
