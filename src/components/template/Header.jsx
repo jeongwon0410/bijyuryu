@@ -192,7 +192,10 @@ function Header(props) {
       )}
 
       <DiscordBox>
-        <DiscordImage src={DiscordImg} />
+        <DiscordImage
+          src={DiscordImg}
+          onClick={() =>  window.open("https://discord.gg/gakqNPsu", "_blank")}
+        />
       </DiscordBox>
       <WalletBox setting={setting}>
         <MetaMaskImage src={MetaMaskImg} onClick={handleClick} />

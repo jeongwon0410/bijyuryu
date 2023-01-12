@@ -36,15 +36,38 @@ const TextArea = styled.div`
   /* margin-top: 100px; */
   color: white;
 `
+const ImgText = styled.div`
+  font-family: HBIOS-SYS;
+  font-size: 50px;
+  /* margin-top: 100px; */
+  color: white;
+`
 
 function ManagementTeam() {
   return (
     <Container>
       <TextArea>운영진</TextArea>
       <ImageArea>
-        <ImageCustom src={image1} />
-        <ImageCustom src={image2} />
-        <ImageCustom src={image3} />
+        <div>
+          <ImageCustom src={image1} />
+          <ImgText>
+            0 <br />
+            어드바이저
+          </ImgText>
+        </div>
+        <div>
+          <ImageCustom src={image2} />
+          <ImgText>
+            LEE
+            <br /> 디자인
+          </ImgText>
+        </div>
+        <div>
+          <ImageCustom src={image3} />
+          <ImgText>
+            ONE <br /> 개발자
+          </ImgText>
+        </div>
       </ImageArea>
     </Container>
   )

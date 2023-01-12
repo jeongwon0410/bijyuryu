@@ -132,6 +132,7 @@ function RankingItem({ item }) {
                   fontWeight: 500,
                   fontSize: '30px',
                 }}
+                onClick={() => window.open(item.url, '_blank')}
               />
             </Tooltip>
           ) : null}

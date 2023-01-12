@@ -51,6 +51,7 @@ function Ranking(props) {
     uid,
     getCandidate,
     list,
+    setLoading,
   } = props
 
   const [result, setResult] = useState(true)
@@ -174,10 +175,13 @@ function Ranking(props) {
 
   const handleClickInit = async (e) => {
     e.stopPropagation()
-    deleteStorageImg()
-    // try {
-    //   await contract.methods.init().send({ from: account })
-    // } catch (error) {}
+    setLoading(true)
+    try {
+      await contract.methods.init().send({ from: account })
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+    }
   }
 
   const deleteStorageImg = async (e) => {
@@ -194,7 +198,6 @@ function Ranking(props) {
       // await deleteObject(storageRef)
       // alert('성공적으로 업로드 되었습니다')
     } catch (err) {
-      console.log(err)
       alert('이미지 업로드에 실패하였습니다')
     }
   }
@@ -219,7 +222,7 @@ function Ranking(props) {
             <Button onClick={handleButtonResultClick}>{text}</Button>
             <Button onClick={handleButtonRegisterClick}>후보자 등록</Button>
             {/* <Button onClick={() => {}}>후보자 삭제</Button> */}
-            {/* <Button onClick={deleteStorageImg}>초기화</Button> */}
+            <Button onClick={handleClickInit}>초기화</Button>
           </>
         ) : null}
         {account === '' ? null : (

@@ -62,6 +62,7 @@ function GalleryNFT(props) {
         uid={uid}
         getCandidate={getCandidate}
         list={list}
+        setLoading={setLoading}
       />
       <AlertDialog
         open={open}
